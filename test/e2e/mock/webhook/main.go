@@ -138,11 +138,22 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func writeWebhookHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	log.WithFields(log.Fields{"application": "webhooks", "path": r.URL.Path, "response": r.URL.Query().Get("response")}).Info("sending response")
+	_, _ = w.Write([]byte(r.URL.Query().Get("response")))
+}
+
 func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/health", healthCheck)
 	mux.HandleFunc("/webhook", accessLog(headerAuth(webhookHandler)))
+	mux.HandleFunc("/webhook/write", accessLog(writeWebhookHandler))
 
 	s := http.Server{
 		Addr:    ":4459",
