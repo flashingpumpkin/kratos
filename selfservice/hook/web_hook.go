@@ -374,11 +374,11 @@ func parseWebhookResponse(resp *http.Response, id *identity.Identity) (err error
 		return errors.Errorf("empty response provided from the webhook")
 	}
 
-	switch resp.StatusCode {
-	case http.StatusOK:
+	if resp.StatusCode == http.StatusOK {
 		var hookResponse struct {
 			Identity *identity.Identity `json:"identity"`
 		}
+
 		if err := json.NewDecoder(resp.Body).Decode(&hookResponse); err != nil {
 			return errors.Wrap(err, "webhook response could not be unmarshalled properly from JSON")
 		}
@@ -420,10 +420,9 @@ func parseWebhookResponse(resp *http.Response, id *identity.Identity) (err error
 		}
 
 		return nil
-	case http.StatusNoContent:
+	} else if resp.StatusCode == http.StatusNoContent {
 		return nil
-	case http.StatusBadRequest:
-
+	} else if resp.StatusCode >= http.StatusBadRequest {
 		var hookResponse rawHookResponse
 		if err := json.NewDecoder(resp.Body).Decode(&hookResponse); err != nil {
 			return errors.Wrap(err, "webhook response could not be unmarshalled properly from JSON")
