@@ -112,7 +112,7 @@ func (h *DefaultHydra) AcceptLoginRequest(ctx context.Context, hlc uuid.UUID, su
 		}
 
 		var openApiErr *hydraclientgo.GenericOpenAPIError
-		if errors.As(err, openApiErr) {
+		if errors.As(err, &openApiErr) {
 			switch oauth2Err := openApiErr.Model().(type) {
 			case hydraclientgo.ErrorOAuth2:
 				innerErr = innerErr.WithDetail("oauth2_error_hint", oauth2Err.GetErrorHint())
