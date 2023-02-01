@@ -273,7 +273,7 @@ func (p *Persister) normalizeVerifiableAddresses(ctx context.Context, id *identi
 			}
 		}
 
-		if v.VerifiedAt == nil || time.Time(*v.VerifiedAt).IsZero() {
+		if v.Verified && (v.VerifiedAt == nil || time.Time(*v.VerifiedAt).IsZero()) {
 			v.VerifiedAt = pointerx.Ptr(sqlxx.NullTime(time.Now()))
 		}
 
