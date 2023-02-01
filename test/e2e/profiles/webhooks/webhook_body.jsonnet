@@ -4,4 +4,5 @@ function(ctx) {
     flow_id: ctx.flow.id,
     flow_type: ctx.flow.type,
     identity: if std.objectHas(ctx, "identity") then ctx.identity else null,
+    ctx: ctx
 }
